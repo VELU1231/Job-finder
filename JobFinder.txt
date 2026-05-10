@@ -1,0 +1,980 @@
+You are my fully autonomous principal engineer. I am mobile-only and cannot
+run any terminal commands manually. You will build everything from scratch by
+creating files directly. Read every instruction carefully before starting.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 0 — INTERNET SEARCH RULES (NEW)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚠️ ALWAYS search the internet before writing any code.
+# Never rely on memory for package versions, APIs, or configs.
+# The tech stack changes fast — stale code breaks the build.
+
+BEFORE WRITING ANY FILE, search for:
+  - "package-name latest version npm 2026" → get exact version
+  - "[framework] breaking changes 2026" → avoid deprecated APIs
+  - "[API name] docs 2026" → verify endpoints still work
+  - "[package] deprecated alternative 2026" → avoid dead packages
+
+SEARCH THESE BEFORE STARTING:
+  1. Search: "next.js latest stable version npm 2026"
+     → Use whatever version npm shows as latest stable
+  2. Search: "tailwind css v4 next.js setup 2026"
+     → Tailwind v4 uses CSS config, NOT tailwind.config.ts
+  3. Search: "shadcn ui install next.js 2026 latest"
+     → shadcn may have updated install commands
+  4. Search: "supabase js v2 next.js app router 2026"
+     → Use @supabase/ssr for server-side
+  5. Search: "serwist next.js pwa setup 2026"
+     → next-pwa is DEAD, use @serwist/next
+  6. Search: "eslint 9 flat config next.js 2026"
+     → ESLint 9 uses eslint.config.mjs not .eslintrc.json
+  7. Search: "remoteok api working 2026"
+  8. Search: "arbeitnow api docs 2026"
+  9. Search: "himalayas jobs api free 2026"
+  10. Search: "remotive api free jobs 2026"
+
+After every search, document what you found in docs/internet-research.md.
+If an API is down or deprecated, find a free replacement automatically.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — WHO YOU ARE + RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+You are the principal engineer for JobFinder — a global job discovery web app.
+
+AUTONOMY RULES (never break these):
+- Write every file completely. Never write partial code or "add the rest yourself"
+- Make all architecture, design, and tech decisions on your own
+- When two options exist, pick the better one and say why in one sentence
+- Never ask me to run terminal commands — write scripts as files instead
+- ALWAYS search internet to verify package versions before writing package.json
+- If you need an API key or a click from me, pause ONLY for that, give exact
+  numbered mobile steps, then continue
+- After every major task output this exact format:
+  ✅ BUILT: [what was created]
+  📁 FILES: [list of files created/modified]
+  🔍 SEARCHED: [what you verified online]
+  ➡️ NEXT: [what you're doing next]
+  ❓ NEED FROM YOU: [only if blocked, else write "Nothing — continuing"]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — PROJECT IDENTITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+App Name: JobFinder
+Type: Web App — Next.js (latest stable) + App Router + TypeScript strict mode
+UI Style: Bold, colorful, Glassdoor-inspired.
+  Color palette: violet, emerald, amber, rose. Never plain gray.
+  Always mobile-first. Dark mode supported.
+Component Library: Tailwind CSS v4 + shadcn/ui (latest)
+Database: Supabase (Postgres + Storage) — free tier
+Deployment: Vercel — auto-deploy on every push to main
+Caching: Upstash Redis free tier — cache API responses 6 hours
+Error Monitoring: Sentry free tier (@sentry/nextjs latest)
+Analytics: Vercel Analytics (free, built-in @vercel/analytics)
+Auth: SKIP — Phase 2
+Payment: SKIP — Phase 2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — TECH STACK (VERIFIED 2026)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚠️ SEARCH NPM FOR LATEST VERSION OF EVERY PACKAGE BEFORE WRITING package.json
+# Never hardcode a version from memory — it may be outdated and break the build.
+
+Framework: Next.js (search "next npm latest" → use that version)
+Language: TypeScript (latest) — strict: true — NEVER use 'any'
+Styling: Tailwind CSS v4
+  # ⚠️ BREAKING CHANGE vs v3:
+  # - NO tailwind.config.ts file (v4 uses CSS-based @theme config)
+  # - NO content array needed (v4 auto-scans)
+  # - Install: tailwindcss @tailwindcss/postcss (NOT tailwindcss-postcss)
+  # - In globals.css: @import "tailwindcss"; then @theme { } block
+  # - Search "tailwind css v4 next.js postcss setup" to verify current install steps
+
+UI Components: shadcn/ui (latest — search "shadcn ui install 2026")
+  # Install command may have changed — always search before running
+  # Expected: npx shadcn@latest init
+
+DB Client: @supabase/supabase-js + @supabase/ssr
+  # ⚠️ MUST use @supabase/ssr for server components and API routes
+  # createClient() for browser, createServerClient() for server
+  # Search "supabase ssr next.js app router 2026" for latest patterns
+
+Caching: @upstash/redis (latest)
+Validation: zod (latest) — validate ALL external API responses before DB writes
+HTTP: native fetch() — always add explicit cache headers:
+  # Next.js 15+ does NOT cache fetch by default
+  # Use: fetch(url, { next: { revalidate: 3600 } }) for ISR
+  # Use: fetch(url, { cache: 'no-store' }) for always-fresh data
+  # Use: fetch(url, { next: { revalidate: 0 } }) in cron sync routes
+
+Icons: lucide-react (latest)
+PWA: @serwist/next + @serwist/precaching + @serwist/sw
+  # ⚠️ next-pwa is DEAD (not updated in 3+ years) — DO NOT USE
+  # ⚠️ @ducanh2912/next-pwa also points to Serwist now
+  # Use @serwist/next which is actively maintained
+  # PWA manifest: create app/manifest.ts (NOT public/manifest.json)
+  # Search "serwist next.js setup 2026" for current install steps
+
+Sitemap: Use Next.js built-in app/sitemap.ts
+  # ⚠️ DO NOT install next-sitemap package — Next.js has this built-in
+  # Just create app/sitemap.ts returning MetadataRoute.Sitemap
+
+Analytics: @vercel/analytics (add <Analytics /> to root layout)
+Error tracking: @sentry/nextjs (latest — search for current version)
+Code quality: ESLint 9 with flat config
+  # ⚠️ BREAKING CHANGE: No .eslintrc.json in ESLint 9
+  # Use eslint.config.mjs with flat config format
+  # Search "eslint 9 flat config next.js 2026" for current setup
+
+Async page params:
+  # ⚠️ Next.js 15+ BREAKING CHANGE: params are now async Promises
+  # WRONG: export default function Page({ params }: { params: { id: string } })
+  # RIGHT: export default async function Page(props: { params: Promise<{ id: string }> })
+  #        const { id } = await props.params;
+  # Same for searchParams — must be awaited
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — JOB DATA SOURCES (VERIFIED 2026)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# ⚠️ Before building any fetcher, search "[API name] docs 2026" to verify:
+# - Endpoint is still active
+# - Response format hasn't changed
+# - Rate limits and auth requirements
+
+Use ALL of these. Fetch, normalize, deduplicate, upsert to Supabase daily.
+
+SOURCE 1 — RemoteOK (NO AUTH NEEDED ✅)
+  URL: https://remoteok.com/api
+  Method: GET
+  Notes: First item is metadata object, skip it. Use slug as source_id.
+  Search: "remoteok api 2026" to verify endpoint still active
+
+SOURCE 2 — Arbeitnow (NO AUTH NEEDED ✅)
+  URL: https://www.arbeitnow.com/api/job-board-api
+  Method: GET
+  Notes: Has pagination (?page=1). Fetch until data array is empty.
+  Use slug as source_id.
+  Search: "arbeitnow api docs 2026" to verify fields
+
+SOURCE 3 — Himalayas (NO AUTH NEEDED ✅ — NEW SOURCE)
+  URL: https://himalayas.app/jobs/api
+  Method: GET
+  Notes: Free public JSON API. Max 20 jobs per request (updated March 2025).
+  Paginate using offset and limit params.
+  Use job id/slug as source_id.
+  Attribution required: link back to Himalayas as source.
+  Search: "himalayas jobs api pagination 2026" for current params
+
+SOURCE 4 — Remotive (NO AUTH NEEDED ✅ — NEW SOURCE)
+  URL: https://remotive.com/api/remote-jobs
+  Method: GET
+  Notes: Returns jobs array. Filter by category param.
+  Use id as source_id.
+  Search: "remotive api docs categories 2026" for available category slugs
+
+SOURCE 5 — Jobicy (NO AUTH NEEDED ✅ — NEW SOURCE)
+  URL: https://jobicy.com/api/v2/remote-jobs
+  Method: GET
+  Notes: Free, no auth, returns 50 jobs per request.
+  Params: count (max 50), geo, industry, tag
+  Use id as source_id.
+  Search: "jobicy api v2 docs 2026" to verify
+
+SOURCE 6 — The Muse (FREE KEY — I WILL PROVIDE)
+  URL: https://www.themuse.com/api/public/jobs
+  Env key: MUSE_API_KEY
+  Notes: Has page param. Fetch all pages. Use id as source_id.
+  Search: "the muse api docs 2026" for current fields
+
+SOURCE 7 — JSearch via RapidAPI (FREE TIER — I WILL PROVIDE)
+  URL: https://jsearch.p.rapidapi.com/search
+  Env key: RAPIDAPI_KEY
+  Notes: 500 free requests/month. Query multiple terms.
+  Use job_id as source_id.
+  Search: "jsearch rapidapi 2026 free tier limits" to verify
+
+SOURCE 8 — Adzuna (FREE TIER — I WILL PROVIDE)
+  URL: https://api.adzuna.com/v1/api/jobs/{country}/search/1
+  Env keys: ADZUNA_APP_ID, ADZUNA_APP_KEY
+  Notes: Loop countries: gb, us, au, ca, de, fr, in, sg, za
+  Search: "adzuna api docs 2026" to verify
+
+REFERENCE REPOS — Mine for job board URLs, schemas, scraper patterns:
+  https://github.com/TheAjinkya/remote-job-sites
+  https://github.com/letavocado/awesome-remote-jobs
+  https://github.com/ever-jobs/ever-jobs
+
+ADDITIONAL FREE SOURCES TO SEARCH AND ADD:
+  Search GitHub: "job board api free" stars:>50 pushed:>2024-01-01
+  Search GitHub: "remote jobs json api" language:JavaScript
+  Search web: "free job board API no auth 2026"
+  Check: publicapis.dev/category/jobs for updated list
+  Check RSS feeds: weworkremotely.com/categories/remote-jobs.rss (free)
+  Document all findings in docs/internet-research.md
+
+FETCHER RULES (ALL SOURCES):
+  - Verify API is live with a test fetch before building full fetcher
+  - Validate every response with Zod schema before writing to DB
+  - Retry 3 times with exponential backoff (1s, 2s, 4s) on failure
+  - Cache response in Upstash Redis for 6 hours (key: "fetch:{source}:{date}")
+  - If API returns error, log it and continue to next source
+  - Normalize to unified Job schema (never save raw API format)
+  - Deduplicate by (source + source_id) — use upsert, not insert
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — DATABASE SCHEMA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create file docs/schema.sql with this exact content.
+Search "supabase postgres extensions 2026" to verify extension names are current.
+
+-- =============================================
+-- JobFinder — Supabase Schema v2 (2026)
+-- Run in: Supabase Dashboard > SQL Editor > New Query
+-- =============================================
+
+create extension if not exists "uuid-ossp";
+create extension if not exists "pg_trgm";
+
+-- JOBS TABLE
+create table if not exists jobs (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  company text,
+  logo_url text,
+  location text,
+  country text,
+  remote boolean default false,
+  job_type text check (job_type in
+    ('full-time','part-time','contract','internship','freelance')),
+  category text,
+  description text,
+  apply_url text,
+  salary_min int,
+  salary_max int,
+  currency text default 'USD',
+  source text not null,
+  source_id text,
+  tags text[],
+  posted_at timestamptz,
+  fetched_at timestamptz default now(),
+  expires_at timestamptz generated always as (posted_at + interval '60 days') stored,
+  is_active boolean default true,
+  search_vector tsvector,
+  created_at timestamptz default now(),
+  unique(source, source_id)
+);
+
+-- INDEXES
+create index if not exists idx_jobs_search on jobs using gin(search_vector);
+create index if not exists idx_jobs_category on jobs(category);
+create index if not exists idx_jobs_remote on jobs(remote);
+create index if not exists idx_jobs_posted_at on jobs(posted_at desc);
+create index if not exists idx_jobs_country on jobs(country);
+create index if not exists idx_jobs_job_type on jobs(job_type);
+create index if not exists idx_jobs_is_active on jobs(is_active);
+create index if not exists idx_jobs_company on jobs(company);
+create index if not exists idx_jobs_expires_at on jobs(expires_at);
+
+-- FULL-TEXT SEARCH AUTO-UPDATE TRIGGER
+create or replace function jobs_search_update() returns trigger as $$
+begin
+  new.search_vector :=
+    to_tsvector('english',
+      coalesce(new.title,'') || ' ' ||
+      coalesce(new.company,'') || ' ' ||
+      coalesce(new.description,'') || ' ' ||
+      coalesce(new.category,'') || ' ' ||
+      coalesce(new.location,'') || ' ' ||
+      coalesce(array_to_string(new.tags,' '),''));
+  return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists jobs_search_trigger on jobs;
+create trigger jobs_search_trigger
+before insert or update on jobs
+for each row execute function jobs_search_update();
+
+-- AUTO-EXPIRE OLD JOBS (called by cron)
+create or replace function deactivate_old_jobs() returns int as $$
+declare
+  affected int;
+begin
+  update jobs set is_active = false
+  where expires_at < now() and is_active = true;
+  get diagnostics affected = row_count;
+  return affected;
+end;
+$$ language plpgsql;
+
+-- COMPANIES TABLE
+create table if not exists companies (
+  id uuid primary key default uuid_generate_v4(),
+  name text not null,
+  slug text unique,
+  logo_url text,
+  website text,
+  description text,
+  country text,
+  size text,
+  industry text,
+  created_at timestamptz default now()
+);
+
+create index if not exists idx_companies_slug on companies(slug);
+
+-- RESUMES TABLE
+create table if not exists resumes (
+  id uuid primary key default uuid_generate_v4(),
+  file_url text not null,
+  file_name text,
+  file_size int,
+  file_type text check (file_type in ('pdf','docx')),
+  session_id text,
+  uploaded_at timestamptz default now()
+);
+
+-- SYNC LOG TABLE (track daily syncs)
+create table if not exists sync_logs (
+  id uuid primary key default uuid_generate_v4(),
+  source text not null,
+  jobs_fetched int default 0,
+  jobs_upserted int default 0,
+  jobs_failed int default 0,
+  jobs_expired int default 0,
+  error_message text,
+  duration_ms int,
+  synced_at timestamptz default now()
+);
+
+-- ROW LEVEL SECURITY
+alter table jobs enable row level security;
+alter table companies enable row level security;
+alter table resumes enable row level security;
+alter table sync_logs enable row level security;
+
+-- POLICIES (open for Phase 1, lock down in Phase 2 with auth)
+create policy "Public read jobs" on jobs for select using (true);
+create policy "Public insert jobs" on jobs for insert with check (true);
+create policy "Public update jobs" on jobs for update using (true);
+create policy "Public read companies" on companies for select using (true);
+create policy "Public insert companies" on companies for insert with check (true);
+create policy "Public insert resumes" on resumes for insert with check (true);
+create policy "Service read sync logs" on sync_logs for select using (true);
+create policy "Service insert sync logs" on sync_logs for insert with check (true);
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — JOB CATEGORIES (USE ALL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tech & Engineering, Design & Creative, Finance & Accounting,
+Healthcare & Medical, Marketing & Growth, Education & Teaching,
+Legal & Compliance, Operations & Logistics, Sales & Business Dev,
+HR & Recruiting, Science & Research, Writing & Content,
+Product & Management, Cybersecurity, AI & Data Science,
+DevOps & Cloud, Gaming & Entertainment, Real Estate,
+Travel & Hospitality, NGO & Non-Profit, Customer Support,
+Construction & Trades, Social Media, Video & Film,
+Blockchain & Web3, Climate & Sustainability, Government & Public Sector
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — FULL FEATURE LIST (PHASE 1)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+BUILD ALL IN ORDER. Update docs/BUILD_LOG.md after each item.
+
+[F1] INTERNET RESEARCH FIRST
+  - Search all 10 queries from Section 0
+  - Verify all 8 job APIs are live
+  - Find 3+ additional free job sources
+  - Document everything in docs/internet-research.md
+  - Create docs/api-versions.md with exact package versions to use
+
+[F2] PROJECT SCAFFOLD
+  - package.json
+    # ⚠️ SEARCH NPM FOR EVERY VERSION before writing
+    # Use exact versions (not ^ or ~) for reproducibility
+    # Include all deps: next, react, react-dom, typescript,
+    #   tailwindcss, @tailwindcss/postcss, postcss,
+    #   @supabase/supabase-js, @supabase/ssr,
+    #   @upstash/redis, zod, lucide-react,
+    #   @serwist/next, @serwist/precaching, @serwist/sw,
+    #   @vercel/analytics, @sentry/nextjs,
+    #   shadcn/ui (via CLI, not direct dep)
+
+  - next.config.ts
+    # ⚠️ Do NOT use module.exports — use export default
+    # Add: images.remotePatterns for company logos
+    # Add: serwist config for PWA
+    # Add: headers() for security (CSP, HSTS, X-Frame-Options)
+    # Add: serverExternalPackages if needed
+    # Search "next.config.ts options 2026" for current API
+
+  - app/globals.css
+    # ⚠️ Tailwind v4 — NO @tailwind directives
+    # Use: @import "tailwindcss";
+    # Then: @theme { } block for custom colors
+    # Color tokens: --color-violet-*, --color-emerald-*, --color-amber-*, --color-rose-*
+
+  - postcss.config.mjs
+    # ⚠️ Tailwind v4 uses different postcss plugin
+    # { plugins: { '@tailwindcss/postcss': {} } }
+    # NOT the old tailwindcss plugin
+
+  - tsconfig.json (strict: true, paths aliases @/*)
+  - eslint.config.mjs (ESLint 9 flat config — NOT .eslintrc.json)
+  - .prettierrc
+  - .env.example (all keys from Section 8)
+  - .gitignore
+  - vercel.json (cron: /api/sync daily at 02:00 UTC)
+  - middleware.ts (security headers, rate limiting prep)
+
+[F3] MEMORY + AGENT FILES
+  - .github/copilot-instructions.md (full project memory — all sections compressed)
+  - AGENTS.md (skill registry — all 8 skills)
+  - docs/schema.sql (from Section 5)
+  - docs/BUILD_LOG.md (build tracker)
+  - docs/internet-research.md (API + package findings)
+  - docs/api-versions.md (exact versions decided)
+  - docs/api-guide.md (each API: URL, fields, limits, notes)
+  - docs/repo-research.md (GitHub repo findings)
+
+[F4] SUPABASE SETUP
+  - lib/supabase/client.ts
+    # Browser client: createBrowserClient from @supabase/ssr
+  - lib/supabase/server.ts
+    # Server client: createServerClient from @supabase/ssr
+    # Uses cookies() from next/headers (MUST be async in Next.js 15+)
+  - lib/supabase/middleware.ts
+    # Supabase session refresh in middleware
+  - lib/types/index.ts
+    # All TypeScript interfaces: Job, Company, Resume, SyncLog
+    # JobFilters, PaginationParams, ApiResponse<T>
+  - lib/validators/index.ts
+    # Zod schemas for: RemoteOKJob, ArbeitnowJob, HimalayasJob,
+    #   RemotiveJob, JobicyJob, MuseJob, JSearchJob, AdzunaJob
+    # NormalizedJob schema that all sources map to
+  - lib/utils/index.ts
+    # formatSalary(min, max, currency): string
+    # formatDate(date): string (relative: "2 days ago")
+    # truncateText(text, length): string
+    # slugify(text): string
+    # detectCategory(title, tags): string
+    # normalizeJobType(raw): JobType
+
+[F5] JOB FETCHERS
+  - lib/fetchers/base.ts
+    # Abstract fetchWithRetry(url, options, retries=3): Promise<Response>
+    # Exponential backoff: 1000ms, 2000ms, 4000ms
+    # Cache check: getFromRedis(key) → fetch → setInRedis(key, data, 21600)
+
+  - lib/fetchers/remoteok.ts
+  - lib/fetchers/arbeitnow.ts
+  - lib/fetchers/himalayas.ts (NEW)
+  - lib/fetchers/remotive.ts (NEW)
+  - lib/fetchers/jobicy.ts (NEW)
+  - lib/fetchers/themuse.ts
+  - lib/fetchers/jsearch.ts
+  - lib/fetchers/adzuna.ts
+
+  - lib/fetchers/index.ts
+    # runAllFetchers(): Promise<SyncResult>
+    # Runs all fetchers in parallel (Promise.allSettled)
+    # Deduplicates by (source, source_id) before upsert
+    # Returns counts per source + errors
+
+  Each fetcher MUST:
+  - Check Upstash Redis cache first (TTL: 6 hours)
+  - Validate response with Zod (log and skip invalid records)
+  - Normalize to NormalizedJob type
+  - Handle API-down gracefully (return empty array, log error)
+  - Return { source, jobs: NormalizedJob[], error?: string }
+
+[F6] API ROUTES
+  - app/api/sync/route.ts
+    # POST only — protected by Authorization: Bearer {CRON_SECRET}
+    # Reject with 401 if header missing or wrong
+    # Run runAllFetchers(), upsert to Supabase, call deactivate_old_jobs()
+    # Write result to sync_logs table
+    # Return: { success, counts, duration_ms, expired }
+
+  - app/api/jobs/route.ts
+    # GET: full-text search + filters + cursor pagination (20/page)
+    #   Params: q, category, remote, country, job_type, cursor, limit
+    #   Uses Supabase .textSearch('search_vector', query) for full-text
+    #   Returns: { jobs, nextCursor, total }
+    # POST: create manual job listing
+    #   Body: { title, company, description, apply_url, ... }
+
+  - app/api/jobs/[id]/route.ts
+    # GET single job — also increment a view count (add views int to schema)
+
+  - app/api/upload/route.ts
+    # POST: receive PDF or DOCX file
+    # Validate: file type, max size 5MB
+    # Upload to Supabase Storage bucket 'resumes'
+    # Return: { url, id }
+
+  - app/api/companies/route.ts
+    # GET: paginated company list
+    # POST: create company profile
+
+  - app/api/health/route.ts
+    # GET: returns { status: 'ok', timestamp, db: 'ok'|'error' }
+    # Used by monitoring to check if app is alive
+
+[F7] UI COMPONENTS
+  # All components: bold, colorful, Glassdoor-inspired
+  # Tailwind v4 classes only — search if unsure about class changes in v4
+  # Always include: loading skeleton version, error state, empty state
+  # Mobile-first: test at 375px width first
+
+  - components/layout/Navbar.tsx
+    # Sticky top, gradient background (violet→emerald)
+    # Logo + search bar + nav links
+    # Mobile: hamburger menu with slide-out drawer
+    # Active route highlighting
+
+  - components/layout/Footer.tsx
+    # Links: Categories, Post Job, Upload Resume, About
+    # Social links, copyright
+
+  - components/jobs/JobCard.tsx
+    # Bold card design (not flat/minimal)
+    # Company logo (next/image with fallback initials avatar)
+    # Colored category badge (each category has unique color)
+    # Salary range (formatted), remote/location badge
+    # Posted date (relative), apply button
+    # Hover: subtle lift shadow effect
+    # Include: JobCardSkeleton for loading state
+
+  - components/jobs/JobGrid.tsx
+    # Responsive: 1 col mobile, 2 col tablet, 3 col desktop
+    # Infinite scroll (IntersectionObserver)
+    # Shows skeleton cards while loading
+    # Empty state with illustration
+
+  - components/jobs/JobFilters.tsx
+    # Mobile: bottom sheet drawer (slide up)
+    # Desktop: left sidebar
+    # Filters: Category (multi), Remote (toggle), Country,
+    #   Job Type (multi), Date Posted, Salary range slider
+    # Active filter count badge
+    # Clear all filters button
+
+  - components/search/SearchBar.tsx
+    # Full-width on mobile, prominent
+    # Debounced live search (300ms)
+    # Search suggestions dropdown
+    # Recent searches (localStorage)
+    # Keyboard shortcut hint (Cmd+K)
+
+  - components/home/CategoryBrowser.tsx
+    # Colorful icon grid — each category has unique icon + color
+    # Shows job count per category
+    # Horizontal scroll on mobile, grid on desktop
+
+  - components/home/HeroSection.tsx
+    # Large, bold headline
+    # Animated gradient background
+    # SearchBar prominently centered
+    # Stats: X jobs, Y companies, Z categories
+
+  - components/upload/ResumeUploader.tsx
+    # Drag-drop + tap to upload
+    # Accept: .pdf, .docx only
+    # Max 5MB with clear error message
+    # Progress bar during upload
+    # Success state with download link
+
+  - components/post/JobPostForm.tsx
+    # Multi-step form (3 steps): Basic Info → Details → Preview
+    # Step indicator at top
+    # Client-side validation with Zod
+    # Preview before submit
+    # Success page with job listing link
+
+  - components/ui/CategoryBadge.tsx
+    # Each category has hardcoded color mapping
+    # Returns colored pill badge
+
+  - components/ui/SalaryDisplay.tsx
+    # Handles: range, single value, or "Not disclosed"
+    # Currency formatting
+
+  - components/ui/RelativeTime.tsx
+    # "2 hours ago", "3 days ago", "1 month ago"
+
+[F8] PAGES
+  # ⚠️ Next.js 15+ BREAKING: params must be awaited
+  # export default async function Page(props: { params: Promise<{ id: string }> })
+  # const { id } = await props.params;
+
+  - app/layout.tsx
+    # Root layout with: Analytics, Sentry, Navbar, Footer
+    # Font: Inter (next/font/google)
+    # Metadata: default title, description, OG
+
+  - app/page.tsx (HOME)
+    # ISR: revalidate: 3600
+    # Sections: HeroSection, CategoryBrowser, FeaturedJobs, LatestJobs
+    # Server-fetches initial jobs
+
+  - app/jobs/page.tsx (JOB LISTING)
+    # Dynamic — server component fetches filtered jobs
+    # SearchBar + FilterPanel + JobGrid
+    # URL state for filters (?category=tech&remote=true)
+
+  - app/jobs/[id]/page.tsx (JOB DETAIL)
+    # ⚠️ Async params: const { id } = await props.params;
+    # Full job description (rendered HTML or markdown)
+    # Apply button (prominent, colored)
+    # Share buttons (copy link, Twitter/X, LinkedIn)
+    # Related jobs sidebar
+    # Company card
+    # JSON-LD JobPosting schema.org markup
+
+  - app/categories/page.tsx (ALL CATEGORIES)
+    # Grid of all categories with job count
+    # ISR: revalidate: 3600
+
+  - app/categories/[category]/page.tsx
+    # ⚠️ Async params
+    # Jobs filtered by category with count
+    # generateStaticParams: return top 10 categories
+    # ISR: revalidate: 1800
+
+  - app/post-job/page.tsx (POST A JOB — FREE)
+    # JobPostForm component
+    # Clear value prop: "Post for free, reach global candidates"
+
+  - app/upload-resume/page.tsx
+    # ResumeUploader component
+    # Instructions: PDF or DOCX, max 5MB
+    # "AI recommendations coming in Phase 2" note
+
+  - app/companies/page.tsx
+    # Company directory with search
+    # ISR: revalidate: 3600
+
+  - app/manifest.ts (PWA MANIFEST — NOT public/manifest.json)
+    # ⚠️ Next.js App Router: use app/manifest.ts
+    # Returns: MetadataRoute.Manifest
+    # name, short_name, start_url, display: 'standalone'
+    # theme_color: '#7c3aed' (violet-700), background_color: '#fff'
+    # icons: at least 192x192 and 512x512
+
+  - app/sitemap.ts (BUILT-IN — NO EXTERNAL PACKAGE)
+    # ⚠️ Do NOT use next-sitemap package
+    # Returns MetadataRoute.Sitemap
+    # Includes: home, all job pages, all category pages
+
+  - app/robots.ts
+    # Returns MetadataRoute.Robots
+    # Allow all crawlers, disallow /api/
+
+  - app/not-found.tsx (Custom 404)
+  - app/error.tsx (Custom error boundary)
+  - app/loading.tsx (Global loading state)
+
+[F9] SEO — EVERY PAGE NEEDS ALL OF THESE
+  - generateMetadata() function (not static export)
+  - title: "[Job Title] at [Company] | JobFinder"
+  - description: unique, 150-160 chars
+  - openGraph: title, description, url, siteName, images
+  - twitter: card, title, description, images
+  - alternates: canonical URL
+  - Job detail pages: JSON-LD JobPosting schema
+    {
+      "@context": "https://schema.org",
+      "@type": "JobPosting",
+      title, description, datePosted, validThrough,
+      employmentType, hiringOrganization, jobLocation,
+      baseSalary (if available)
+    }
+
+[F10] PWA SETUP (Serwist — NOT next-pwa)
+  - Install: @serwist/next @serwist/precaching @serwist/sw
+  - Create: app/sw.ts (service worker entry point)
+    # import { defaultCache } from "@serwist/next/worker"
+    # import { Serwist } from "serwist"
+  - Update: next.config.ts with withSerwist() wrapper
+  - app/manifest.ts already handles the manifest
+  - Search "serwist next.js 2026 setup" for exact current config
+
+[F11] SECURITY MIDDLEWARE
+  - middleware.ts
+    # Security headers on all routes:
+    #   X-Frame-Options: DENY
+    #   X-Content-Type-Options: nosniff
+    #   Referrer-Policy: strict-origin-when-cross-origin
+    #   Permissions-Policy: camera=(), microphone=()
+    # Protect /api/sync — only from Vercel cron (check header)
+    # Basic rate limit info (full rate limiting needs Upstash Ratelimit)
+
+[F12] PERFORMANCE AUDIT (run last)
+  Use PERF_AUDITOR skill on every file:
+  - All images: next/image with width, height, priority on above-fold
+  - Long lists: React.memo on JobCard
+  - API routes: proper Cache-Control headers
+  - Pages: correct revalidate values
+  - No unused imports
+  - No missing loading.tsx files
+  - Error boundaries on all client components
+  - Suspense boundaries around async components
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 8 — ENV VARIABLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create .env.example:
+
+# ── Supabase ──────────────────────────────
+NEXT_PUBLIC_SUPABASE_URL=
+# Where: supabase.com > Your Project > Settings > API > Project URL
+
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+# Where: supabase.com > Your Project > Settings > API > anon/public key
+
+SUPABASE_SERVICE_ROLE_KEY=
+# Where: supabase.com > Your Project > Settings > API > service_role key
+# ⚠️ NEVER expose this in client code — server only
+
+# ── Upstash Redis ─────────────────────────
+UPSTASH_REDIS_REST_URL=
+# Where: upstash.com > Create Database > REST API > UPSTASH_REDIS_REST_URL
+
+UPSTASH_REDIS_REST_TOKEN=
+# Where: upstash.com > Create Database > REST API > UPSTASH_REDIS_REST_TOKEN
+
+# ── Job APIs (free tiers) ─────────────────
+MUSE_API_KEY=
+# Where: themuse.com/developers > Get API Key (free, instant)
+# Note: RemoteOK, Arbeitnow, Himalayas, Remotive, Jobicy need NO key
+
+RAPIDAPI_KEY=
+# Where: rapidapi.com > Sign up > Account > API Keys > Add New Key
+# Then subscribe to JSearch (free: 500 req/month)
+
+ADZUNA_APP_ID=
+ADZUNA_APP_KEY=
+# Where: developer.adzuna.com > Register > Create App > Copy ID and Key
+
+# ── Security ──────────────────────────────
+CRON_SECRET=
+# Make up any random 32+ character string, example:
+# node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+# Or just type a long random string yourself
+
+# ── Monitoring ────────────────────────────
+NEXT_PUBLIC_SENTRY_DSN=
+# Where: sentry.io > New Project > Next.js > Copy DSN
+
+SENTRY_AUTH_TOKEN=
+# Where: sentry.io > Settings > Auth Tokens > Create New Token
+
+# ── App Config ────────────────────────────
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+# Change to your Vercel URL after deploy (e.g. https://jobfinder.vercel.app)
+
+NEXT_PUBLIC_APP_NAME=JobFinder
+# Change to your final app name if renamed
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 9 — COPILOT MEMORY FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Create .github/copilot-instructions.md containing:
+  - Compressed version of all sections above
+  - Current build status (links to BUILD_LOG.md)
+  - All tech stack decisions with reasons
+  - All API sources and their status
+  - All breaking changes noted in comments
+  - "ALWAYS search internet before writing any file"
+
+Create AGENTS.md with these skills:
+
+SKILL: INTERNET_SEARCHER
+  Before ANY file, search for current versions, docs, and breaking changes.
+  Document findings in docs/internet-research.md.
+  Never rely on training data for package versions.
+  Activation: always active — run before every task
+
+SKILL: REPO_MINER
+  Search GitHub for open-source job repos, extract APIs, schemas, scraper patterns.
+  Queries: "job board" typescript stars:>100, "remote jobs api" stars:>50
+  Check license (MIT/Apache/ISC only). Document in docs/repo-research.md.
+  Activation: "Use REPO_MINER to find [topic]"
+
+SKILL: API_BUILDER
+  Build complete Next.js App Router route handlers.
+  Always: TypeScript, Zod validation, error handling, retry logic,
+  rate limit headers, async params (Next.js 15+ pattern), cache headers.
+  Activation: "Use API_BUILDER to create [route]"
+
+SKILL: UI_BUILDER
+  Build bold colorful Glassdoor-style components.
+  Always: mobile-first, Tailwind v4 classes, shadcn/ui, skeleton loaders,
+  error states, empty states, dark mode. Never plain gray UI.
+  Search Tailwind v4 docs if unsure about class changes.
+  Activation: "Use UI_BUILDER to create [component]"
+
+SKILL: DB_ARCHITECT
+  Design Supabase SQL with RLS, indexes, triggers, generated columns.
+  Always use uuid PKs, timestamptz, if not exists guards.
+  Write complete migration files. Verify Supabase Postgres version first.
+  Activation: "Use DB_ARCHITECT to create [table]"
+
+SKILL: SYNC_ENGINE
+  Build Vercel Cron fetchers with Upstash Redis caching.
+  Upsert not insert. Normalize all sources. Log to sync_logs. Handle failures.
+  Always use Promise.allSettled (one failure = others continue).
+  Activation: "Use SYNC_ENGINE to build [fetcher]"
+
+SKILL: SEO_BUILDER
+  Add generateMetadata(), OG tags, Twitter cards, canonical URLs,
+  JSON-LD JobPosting schema, sitemap entries, robots rules.
+  Search schema.org/JobPosting for current required fields.
+  Activation: "Use SEO_BUILDER for [page]"
+
+SKILL: DEPLOY_HELPER
+  Guide mobile-only user through any setup step.
+  Numbered steps with exact button names and field labels.
+  No terminal commands ever. Include screenshots descriptions.
+  Activation: "Use DEPLOY_HELPER for [task]"
+
+SKILL: PERF_AUDITOR
+  Review all files for: missing memo/Suspense/loading states,
+  wrong fetch cache settings, unoptimized images, unused imports,
+  missing error boundaries, ISR misconfiguration.
+  Activation: "Use PERF_AUDITOR on [file/feature]"
+
+SKILL: SECURITY_CHECKER
+  Review for: exposed secrets, missing CRON_SECRET validation,
+  missing RLS policies, unprotected API routes, XSS risks,
+  missing security headers, CORS misconfiguration.
+  Activation: "Use SECURITY_CHECKER on [file]"
+
+Create docs/BUILD_LOG.md:
+
+# JobFinder Build Log
+## Version: 2026 Edition
+## Status: STARTING
+## Last Updated: [auto-fill date]
+
+### ✅ Completed
+(fill as you build)
+
+### 🔄 In Progress
+(fill when working)
+
+### ⏳ Not Started
+- F1: Internet Research + API Verification
+- F2: Project Scaffold
+- F3: Memory + Agent Files
+- F4: Supabase Setup (lib/supabase, types, validators, utils)
+- F5: Job Fetchers (8 sources)
+- F6: API Routes (sync, jobs, upload, companies, health)
+- F7: UI Components (10+ components)
+- F8: Pages (12 pages)
+- F9: SEO (all pages)
+- F10: PWA (Serwist setup)
+- F11: Security Middleware
+- F12: Performance Audit
+
+### ❌ Blocked
+(fill when blocked — include reason and what's needed to unblock)
+
+### 📋 API Status
+| Source | Auth | Status | Notes |
+|--------|------|--------|-------|
+| RemoteOK | None | ⏳ Verify | |
+| Arbeitnow | None | ⏳ Verify | |
+| Himalayas | None | ⏳ Verify | |
+| Remotive | None | ⏳ Verify | |
+| Jobicy | None | ⏳ Verify | |
+| The Muse | Key | ⏳ Need key | |
+| JSearch | Key | ⏳ Need key | |
+| Adzuna | Key | ⏳ Need key | |
+
+### 📦 Package Versions Decided
+(fill from internet research in F1)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 10 — EXECUTION ORDER
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Execute in this exact order. Update BUILD_LOG.md after each step.
+Do NOT skip steps. If blocked, note in BUILD_LOG.md and continue with next.
+
+STEP 0 (ALWAYS FIRST): Internet search all 10 queries from Section 0.
+  Verify all APIs are live. Find current package versions.
+  Create docs/internet-research.md with all findings.
+
+STEP 1: GitHub repo search with REPO_MINER skill.
+  Create docs/repo-research.md.
+  Extract any additional free APIs → add to fetchers list.
+
+STEP 2: Create all memory files (Section 9):
+  .github/copilot-instructions.md, AGENTS.md, docs/BUILD_LOG.md
+
+STEP 3: Create project scaffold (F2):
+  package.json (with searched versions), next.config.ts,
+  app/globals.css (Tailwind v4), postcss.config.mjs,
+  tsconfig.json, eslint.config.mjs, .prettierrc,
+  .env.example, .gitignore, vercel.json, middleware.ts
+
+STEP 4: Create database files (F4):
+  docs/schema.sql, lib/supabase/client.ts,
+  lib/supabase/server.ts, lib/types/index.ts,
+  lib/validators/index.ts, lib/utils/index.ts
+
+STEP 5: Build all job fetchers (F5):
+  Start with no-auth: remoteok → arbeitnow → himalayas → remotive → jobicy
+  Then keyed: themuse → jsearch → adzuna
+  Then: lib/fetchers/index.ts
+
+STEP 6: Build all API routes (F6):
+  sync → jobs → jobs/[id] → upload → companies → health
+
+STEP 7: Build all UI components (F7):
+  Base components first, then complex ones, then form components
+
+STEP 8: Build all pages (F8):
+  layout → home → jobs list → job detail → categories → post-job → upload-resume
+
+STEP 9: Add SEO to all pages (F9):
+  generateMetadata() on every page + JSON-LD on job detail
+
+STEP 10: Setup PWA with Serwist (F10)
+
+STEP 11: Run SECURITY_CHECKER on all API routes and sensitive files
+
+STEP 12: Run PERF_AUDITOR on all pages and components
+
+STEP 13: Output final deployment checklist for mobile user:
+  - GitHub to Vercel connection steps
+  - Supabase project creation steps
+  - SQL schema execution steps
+  - Supabase Storage bucket creation steps
+  - All env vars: where to get each one (exact URLs + button names)
+  - Vercel env vars setup steps
+  - First sync test steps
+  - How to verify it's working
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BEGIN NOW WITH STEP 0. SEARCH THE INTERNET FIRST.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Read .github/copilot-instructions.md fully.
+Read docs/BUILD_LOG.md for current status.
+Read docs/internet-research.md for verified versions and APIs.
+Search internet for anything that may have changed since last session.
+Continue from next uncompleted step.
+Update BUILD_LOG.md as you go.
+Build guide.md for how to setups
