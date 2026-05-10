@@ -1,20 +1,163 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-violet: #7c3aed;
-  --color-brand-emerald: #10b981;
-  --color-brand-amber: #f59e0b;
-  --color-brand-rose: #f43f5e;
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-plus-jakarta);
+
+  --color-brand-50: oklch(0.97 0.03 280);
+  --color-brand-100: oklch(0.92 0.07 280);
+  --color-brand-500: oklch(0.60 0.22 280);
+  --color-brand-600: oklch(0.53 0.23 280);
+  --color-brand-700: oklch(0.46 0.21 280);
+
+  --color-category-tech: oklch(0.66 0.18 252);
+  --color-category-design: oklch(0.72 0.18 350);
+  --color-category-finance: oklch(0.70 0.16 148);
+  --color-category-health: oklch(0.64 0.20 24);
+  --color-category-marketing: oklch(0.73 0.18 56);
+  --color-category-legal: oklch(0.60 0.18 300);
+  --color-category-hr: oklch(0.72 0.13 190);
+  --color-category-education: oklch(0.80 0.17 128);
+  --color-category-ai: oklch(0.64 0.19 292);
+  --color-category-devops: oklch(0.42 0.16 255);
+  --color-category-sales: oklch(0.79 0.16 82);
+  --color-category-writing: oklch(0.82 0.17 135);
+  --color-category-product: oklch(0.59 0.15 276);
+  --color-category-cyber: oklch(0.67 0.17 12);
+  --color-category-science: oklch(0.76 0.12 220);
+  --color-category-ngo: oklch(0.74 0.14 155);
+  --color-category-gaming: oklch(0.68 0.22 328);
+  --color-category-realestate: oklch(0.66 0.03 82);
+  --color-category-travel: oklch(0.74 0.12 236);
+  --color-category-support: oklch(0.60 0.03 255);
+  --color-category-construction: oklch(0.84 0.17 103);
+  --color-category-social: oklch(0.75 0.17 353);
+  --color-category-video: oklch(0.61 0.21 28);
+  --color-category-blockchain: oklch(0.55 0.18 304);
+  --color-category-climate: oklch(0.73 0.14 146);
+  --color-category-government: oklch(0.62 0.02 255);
+
+  --color-success: oklch(0.72 0.16 150);
+  --color-warning: oklch(0.83 0.16 84);
+  --color-error: oklch(0.63 0.21 24);
+  --color-info: oklch(0.69 0.15 245);
+
+  --color-surface-0: oklch(0.99 0.01 280);
+  --color-surface-1: oklch(0.97 0.015 280);
+  --color-surface-2: oklch(0.94 0.02 280);
+  --color-surface-3: oklch(0.90 0.025 280);
+  --color-surface-foreground: oklch(0.24 0.03 270);
+  --color-surface-muted: oklch(0.50 0.03 270);
+  --color-surface-border: oklch(0.86 0.02 280);
+
+  --shadow-card: 0 20px 50px -28px oklch(0.30 0.05 270 / 0.20);
+  --shadow-card-hover: 0 28px 70px -32px oklch(0.40 0.08 280 / 0.28);
+  --shadow-modal: 0 38px 90px -40px oklch(0.18 0.03 270 / 0.35);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-2xl: 2.25rem;
+  --radius-full: 9999px;
+
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 350ms;
+
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+  --color-surface-0: oklch(0.12 0.01 280);
+  --color-surface-1: oklch(0.16 0.015 280);
+  --color-surface-2: oklch(0.21 0.02 280);
+  --color-surface-3: oklch(0.26 0.025 280);
+  --color-surface-foreground: oklch(0.95 0.01 280);
+  --color-surface-muted: oklch(0.73 0.02 280);
+  --color-surface-border: oklch(0.30 0.015 280);
+}
+
+html {
+  scroll-behavior: smooth;
+  min-height: 100%;
+}
+
+body,
+::selection,
+* {
+  transition-timing-function: var(--ease-smooth);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(130deg, #faf5ff 0%, #ecfeff 45%, #fff7ed 100%);
-  color: #111827;
-  font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+  background:
+    radial-gradient(circle at top left, color-mix(in oklab, var(--color-brand-100) 70%, transparent) 0%, transparent 34%),
+    radial-gradient(circle at top right, color-mix(in oklab, var(--color-category-science) 26%, transparent) 0%, transparent 28%),
+    linear-gradient(160deg, var(--color-surface-0) 0%, var(--color-surface-1) 42%, color-mix(in oklab, var(--color-brand-50) 48%, var(--color-surface-1)) 100%);
+  color: var(--color-surface-foreground);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--color-brand-500) 24%, transparent);
+  color: var(--color-surface-foreground);
+}
+
+:where(h1, h2, h3, h4, h5, h6, .font-display) {
+  font-family: var(--font-display);
+}
+
+:where(a, button, input, select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-brand-500) 34%, transparent);
+  border-color: var(--color-brand-500);
+}
+
+.tap-target {
+  min-width: 44px;
+  min-height: 44px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-2) 25%,
+    var(--color-surface-border) 50%,
+    var(--color-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .skeleton-shimmer {
+    animation: none;
+  }
 }

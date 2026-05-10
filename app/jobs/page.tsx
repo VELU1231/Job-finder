@@ -81,7 +81,13 @@ export default async function JobsPage({ searchParams }: { searchParams?: Promis
                   </Link>
                 </div>
               </div>
-              <Suspense fallback={<div className="h-14 animate-pulse rounded-2xl bg-slate-200/80" />}>
+              <Suspense
+                fallback={
+                  <div className="rounded-3xl border border-surface-border bg-surface-0 p-4 shadow-card">
+                    <div className="skeleton-shimmer h-14 w-full rounded-2xl" />
+                  </div>
+                }
+              >
                 <SearchBar placeholder="Search by title, company, or location" />
               </Suspense>
             </div>

@@ -84,8 +84,8 @@ export default async function HomePage() {
       <section className="space-y-5">
         <Suspense
           fallback={
-            <div className="rounded-3xl border border-white/50 bg-white/80 p-4 shadow-lg shadow-slate-200/60">
-              <div className="h-14 animate-pulse rounded-2xl bg-slate-200/80" />
+            <div className="rounded-3xl border border-surface-border bg-surface-0 p-4 shadow-card">
+              <div className="skeleton-shimmer h-14 w-full rounded-2xl" />
             </div>
           }
         >

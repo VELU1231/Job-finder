@@ -16,6 +16,11 @@ interface LogContext {
   metadata?: Record<string, unknown>;
 }
 
+function writeLog(message: string, level: LogContext["level"]): void {
+  const stream = level === "error" || level === "warn" ? process.stderr : process.stdout;
+  stream.write(`${message}\n`);
+}
+
 /**
  * Central logging sink
  * In production, this should integrate with:
@@ -36,10 +41,8 @@ export function logEvent(context: LogContext): void {
   });
 
   if (process.env.NODE_ENV === "production") {
-    // Send to Sentry, DataDog, etc.
-    console.log(formatted);
+    writeLog(formatted, context.level);
   } else {
-    // Local development
     const color = {
       info: "\x1b[36m",    // cyan
       warn: "\x1b[33m",    // yellow
@@ -47,7 +50,7 @@ export function logEvent(context: LogContext): void {
       debug: "\x1b[35m"    // magenta
     }[context.level];
     const reset = "\x1b[0m";
-    console.log(`${color}[${context.level.toUpperCase()}]${reset} ${formatted}`);
+    writeLog(`${color}[${context.level.toUpperCase()}]${reset} ${formatted}`, context.level);
   }
 }
 
