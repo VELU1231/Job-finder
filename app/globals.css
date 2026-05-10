@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-violet: #7c3aed;
+  --color-brand-emerald: #10b981;
+  --color-brand-amber: #f59e0b;
+  --color-brand-rose: #f43f5e;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(130deg, #faf5ff 0%, #ecfeff 45%, #fff7ed 100%);
+  color: #111827;
+  font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+}
