@@ -3,7 +3,8 @@ import withSerwistInit from "@serwist/next";
 
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts",
-  swDest: "public/sw.js"
+  swDest: "public/sw.js",
+  disable: process.env.NODE_ENV !== "production"
 });
 
 const securityHeaders = [
@@ -15,6 +16,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.linkedin.com" },

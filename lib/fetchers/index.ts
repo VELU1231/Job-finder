@@ -1,4 +1,11 @@
 import type { NormalizedJob } from "@/lib/types";
+import { fetchAdzuna } from "./adzuna";
+import { fetchArbeitnow } from "./arbeitnow";
+import { fetchHimalayas } from "./himalayas";
+import { fetchJobicy } from "./jobicy";
+import { fetchJSearch } from "./jsearch";
+import { fetchMuse } from "./muse";
+import { fetchRemotive } from "./remotive";
 import { fetchRemoteOK } from "./remoteok";
 
 export interface SyncSourceReport {
@@ -14,7 +21,16 @@ export interface SyncResult {
 }
 
 export async function runAllFetchers(): Promise<SyncResult> {
-  const tasks = [fetchRemoteOK()];
+  const tasks = [
+    fetchRemoteOK(),
+    fetchArbeitnow(),
+    fetchHimalayas(),
+    fetchRemotive(),
+    fetchJobicy(),
+    fetchMuse(),
+    fetchJSearch(),
+    fetchAdzuna()
+  ];
   const settled = await Promise.allSettled(tasks);
   const jobs: NormalizedJob[] = [];
   const dedupe = new Set<string>();
