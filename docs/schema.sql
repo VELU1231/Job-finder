@@ -28,13 +28,30 @@ create table if not exists jobs (
   tags text[],
   posted_at timestamptz,
   fetched_at timestamptz default now(),
-  expires_at timestamptz generated always as (posted_at + interval '60 days') stored,
+  expires_at timestamptz,
   is_active boolean default true,
   search_vector tsvector,
   created_at timestamptz default now(),
   views int default 0,
   unique(source, source_id)
 );
+
+-- Compatibility: if an older schema created expires_at as a generated column,
+-- convert it to a normal column so trigger-based updates work.
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'jobs'
+      and column_name = 'expires_at'
+      and is_generated = 'ALWAYS'
+  ) then
+    execute 'alter table jobs alter column expires_at drop expression';
+  end if;
+end
+$$;
 
 -- INDEXES
 create index if not exists idx_jobs_search on jobs using gin(search_vector);
@@ -50,6 +67,11 @@ create index if not exists idx_jobs_expires_at on jobs(expires_at);
 -- FULL-TEXT SEARCH AUTO-UPDATE TRIGGER
 create or replace function jobs_search_update() returns trigger as $$
 begin
+  new.expires_at := case
+    when new.posted_at is null then null
+    else new.posted_at + interval '60 days'
+  end;
+
   new.search_vector :=
     to_tsvector('english',
       coalesce(new.title,'') || ' ' ||
