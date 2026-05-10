@@ -126,6 +126,16 @@ alter table resumes enable row level security;
 alter table sync_logs enable row level security;
 
 -- POLICIES (open for Phase 1, lock down in Phase 2 with auth)
+-- Drop first so the script can be safely re-run.
+drop policy if exists "Public read jobs" on jobs;
+drop policy if exists "Public insert jobs" on jobs;
+drop policy if exists "Public update jobs" on jobs;
+drop policy if exists "Public read companies" on companies;
+drop policy if exists "Public insert companies" on companies;
+drop policy if exists "Public insert resumes" on resumes;
+drop policy if exists "Service read sync logs" on sync_logs;
+drop policy if exists "Service insert sync logs" on sync_logs;
+
 create policy "Public read jobs" on jobs for select using (true);
 create policy "Public insert jobs" on jobs for insert with check (true);
 create policy "Public update jobs" on jobs for update using (true);
