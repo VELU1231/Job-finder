@@ -71,7 +71,15 @@ export default async function JobsPage({ searchParams }: { searchParams?: Promis
                   <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Jobs</p>
                   <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950">Live opportunities</h1>
                 </div>
-                <p className="text-sm text-slate-600">{total} total matches</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-sm text-slate-600">{total} total matches</p>
+                  <Link
+                    href="/post-job"
+                    className="rounded-full bg-gradient-to-r from-violet-600 via-emerald-500 to-amber-400 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:scale-[1.01]"
+                  >
+                    Post a job
+                  </Link>
+                </div>
               </div>
               <Suspense fallback={<div className="h-14 animate-pulse rounded-2xl bg-slate-200/80" />}>
                 <SearchBar placeholder="Search by title, company, or location" />
@@ -81,12 +89,6 @@ export default async function JobsPage({ searchParams }: { searchParams?: Promis
 
           <JobList jobs={jobs} />
           <Pagination nextCursor={nextCursor} prevCursor={params.cursor && Number(params.cursor) > 0 ? String(Math.max(0, Number(params.cursor) - 20)) : null} queryString={`q=${encodeURIComponent(params.q ?? "")}&category=${encodeURIComponent(params.category ?? "")}&remote=${encodeURIComponent(params.remote ?? "")}`} />
-
-          <div className="flex justify-end">
-            <Link href="/api/jobs" className="text-sm font-medium text-violet-700 hover:text-violet-900">
-              API response
-            </Link>
-          </div>
         </section>
       </div>
     </main>

@@ -48,6 +48,12 @@ export default async function HomePage() {
               Browse jobs
             </Link>
             <Link
+              href="/post-job"
+              className="rounded-full bg-gradient-to-r from-violet-600 via-emerald-500 to-amber-400 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-200 transition hover:scale-[1.01]"
+            >
+              Post a job
+            </Link>
+            <Link
               href="/upload-resume"
               className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:border-violet-300 hover:text-violet-700"
             >
