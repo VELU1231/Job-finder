@@ -3,8 +3,7 @@ import Link from "next/link";
 const navItems = [
   { href: "/jobs", label: "Jobs" },
   { href: "/post-job", label: "Post a Job" },
-  { href: "/upload-resume", label: "Upload Resume" },
-  { href: "/api/health", label: "Health" }
+  { href: "/upload-resume", label: "Upload Resume" }
 ];
 
 export function Navbar() {
